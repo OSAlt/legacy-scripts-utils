@@ -1,1 +1,4 @@
 openpyxl==2.4.8
+pymysql
+SQLAlchemy==1.1.6
+psycopg2==2.5.4

@@ -1,0 +1,12 @@
+debug: True
+
+database:
+    # supported values are mysql+pymysql or postgresql+psycopg2
+    engine: mysql+pymysql
+    host: localhost
+    user: root
+    password: secret
+    database: skills
+    port: 3306
+    encoding: utf8
+
