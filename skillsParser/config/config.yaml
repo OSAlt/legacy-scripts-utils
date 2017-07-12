@@ -1,12 +1,12 @@
-debug: True
+debug: False
 
 database:
-    # supported values are mysql+pymysql or postgresql+psycopg2
-    engine: mysql+pymysql
+    engine: postgresql+psycopg2
     host: localhost
-    user: root
+    user: postgres
     password: secret
-    database: skills
-    port: 3306
+    database: surveys
+    port: 5432
     encoding: utf8
+    schema: skills
 
