@@ -64,8 +64,8 @@ class User(object):
 
 
     def __create_user(self, engine):
-        query = text("""INSERT into users (creation_date, email, discord, skills_details, availability, coder, previous_experience) VALUES
-  (:creation_date, :email, :discord, :skills_details, :availability, :coder, :previous_experience ) """ )
+        query = text("""INSERT into skills.users (user_email, creation_date, discord, skills_details, availability, coder, previous_experience) VALUES
+  (:email, :creation_date, :discord, :skills_details, :availability, :coder, :previous_experience ) """ )
 
         engine.execute(query,
                        creation_date=self.date,
@@ -77,13 +77,10 @@ class User(object):
                        skills_details=self.skills,
                        previous_experience=self.previous_expr)
 
-        result = engine.execute(text("""SELECT user_id FROM users WHERE email = :email LIMIT 1"""), email=self.email)
-        row = result.fetchone()
-        user_id = row.values()[0]
-        return user_id
+        return self.email
 
 
-    def __create_user_languages(self, engine, user_id):
+    def __create_user_languages(self, engine, user_email):
         if not self.coder:
             return
 
@@ -92,30 +89,30 @@ class User(object):
             if skill is None:
                 continue
 
-            query = text("""INSERT into user_programming_languages (user_id, user_language, skillset, description) 
-                        VALUES (:user_id,  :language, :skillset, :description) """)
+            query = text("""INSERT into skills.user_programming_languages (user_email, user_language, skillset, description) 
+                        VALUES (:user_email,  :language, :skillset, :description) """)
             engine.execute(query,
-                               user_id=user_id,
-                               language=lang.strip(),
-                               skillset=self.translation_map.get(skill, 0),
-                               description=skill)
+                           user_email=user_email,
+                           language=lang.strip(),
+                           skillset=self.translation_map.get(skill, 0),
+                           description=skill)
 
 
-    def __create_user_categories(self, cursor, user_id, categories):
+    def __create_user_categories(self, cursor, user_email, categories):
         for c in categories:
-            query = text("""INSERT into user_categories (user_id, user_category) VALUES (:user_id, :category) """ )
-            cursor.execute(query, user_id=user_id, category=c.strip())
+            query = text("""INSERT into skills.user_categories (user_email, user_category) VALUES (:user_email, :category) """ )
+            cursor.execute(query, user_email=user_email, category=c.strip())
 
 
     def persist(self, engine):
-           user_id = self.__create_user(engine)
-           print('created user: {}'.format(user_id))
+           user_email = self.__create_user(engine)
+           print('created user: {}'.format(user_email))
            help = self._help_with
            items = self._help_with.split(',')
            if(len(items)) > 0:
-                self.__create_user_categories(engine, user_id, items)
+                self.__create_user_categories(engine, user_email, items)
 
-           self.__create_user_languages(engine, user_id)
+           self.__create_user_languages(engine, user_email)
 
 
 

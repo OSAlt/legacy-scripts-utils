@@ -1,46 +1,102 @@
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET row_security = off;
 
-SET NAMES utf8;
-SET time_zone = '+00:00';
-SET foreign_key_checks = 0;
-SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
+CREATE SCHEMA skills;
+
+SET search_path = skills, pg_catalog;
+
+ALTER SCHEMA skills OWNER TO postgres;
+
+--
+-- Name: user_categories; Type: TABLE; Schema: skills; Owner: postgres
+--
+
+CREATE TABLE user_categories (
+    user_email text NOT NULL,
+    user_category text NOT NULL
+);
 
 
-DROP TABLE IF EXISTS `users`;
-CREATE TABLE `users` (
-  `user_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `creation_date` datetime NOT NULL,
-  `email` varchar(100) NOT NULL UNIQUE ,
-  `discord` varchar(100),
-  `skills_details` text,
-  `availability` text,
-  `coder` BOOLEAN,
-  `previous_experience` BOOLEAN,
-  PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ALTER TABLE user_categories OWNER TO postgres;
+
+--
+-- Name: user_programming_languages; Type: TABLE; Schema: skills; Owner: postgres
+--
+
+CREATE TABLE user_programming_languages (
+    user_email text NOT NULL,
+    user_language text NOT NULL,
+    skillset integer,
+    description text
+);
 
 
+ALTER TABLE user_programming_languages OWNER TO postgres;
+
+--
+-- Name: users; Type: TABLE; Schema: skills; Owner: postgres
+--
+
+CREATE TABLE users (
+    user_email text NOT NULL,
+    creation_date timestamp with time zone DEFAULT now(),
+    discord text,
+    skills_details text,
+    availability text,
+    coder boolean DEFAULT false,
+    previous_experience boolean DEFAULT false
+);
 
 
-DROP TABLE IF EXISTS `user_categories`;
-CREATE TABLE user_categories
-(
-    user_id INT(10) unsigned,
-    user_category varchar(200),
-    PRIMARY KEY (user_id, user_category),
-    CONSTRAINT user_categories_users_user_id_fk FOREIGN KEY (user_id) REFERENCES
-    users (user_id) ON DELETE CASCADE ON UPDATE CASCADE
-)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ALTER TABLE users OWNER TO postgres;
 
-DROP TABLE IF EXISTS `user_programming_languages`;
-CREATE TABLE user_programming_languages
-(
-    user_id INT(10) unsigned,
-    user_language varchar(200),
-    skillset int(10),
-    description TEXT,
-    PRIMARY KEY (user_id, user_language),
-    CONSTRAINT user_programming_languages_users_user_id_fk FOREIGN KEY (user_id) REFERENCES
-    users (user_id) ON DELETE CASCADE ON UPDATE CASCADE
-)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+--
+-- Name: user_categories user_categories_pkey; Type: CONSTRAINT; Schema: skills; Owner: postgres
+--
 
+ALTER TABLE ONLY user_categories
+    ADD CONSTRAINT user_categories_pkey PRIMARY KEY (user_email, user_category);
+
+
+--
+-- Name: user_programming_languages user_programming_languages_pkey; Type: CONSTRAINT; Schema: skills; Owner: postgres
+--
+
+ALTER TABLE ONLY user_programming_languages
+    ADD CONSTRAINT user_programming_languages_pkey PRIMARY KEY (user_email, user_language);
+
+
+--
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: skills; Owner: postgres
+--
+
+ALTER TABLE ONLY users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (user_email);
+
+
+--
+-- Name: user_categories user_id_categories___fk; Type: FK CONSTRAINT; Schema: skills; Owner: postgres
+--
+
+ALTER TABLE ONLY user_categories
+    ADD CONSTRAINT user_id_categories___fk FOREIGN KEY (user_email) REFERENCES users(user_email) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: user_programming_languages user_programming_languages_users_user_id_fk; Type: FK CONSTRAINT; Schema: skills; Owner: postgres
+--
+
+ALTER TABLE ONLY user_programming_languages
+    ADD CONSTRAINT user_programming_languages_users_user_id_fk FOREIGN KEY (user_email) REFERENCES users(user_email) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- PostgreSQL database dump complete
+--
 

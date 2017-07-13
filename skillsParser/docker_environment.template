@@ -1,3 +1,2 @@
-MYSQL_ROOT_PASSWORD=supersecret
-MYSQL_DATABASE=skills
-
+POSTGRES_PASSWORD=secret
+POSTGRES_DB=skills

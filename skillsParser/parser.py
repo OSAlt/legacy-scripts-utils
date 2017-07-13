@@ -1,12 +1,12 @@
-import openpyxl
 import string
 
+import openpyxl
 import yaml
 from sqlalchemy import create_engine
-from sqlalchemy.engine.url import URL
 from sqlalchemy.orm import sessionmaker
 
-from user import User
+from models.user import User
+
 
 class Parser(object):
     def __init__(self):
@@ -33,9 +33,11 @@ class Parser(object):
             'port': db_settings['port'],
             'username': db_settings['user'],
             'password': db_settings['password'],
-            'database': db_settings['database']
+            'database': db_settings['database'],
+            'schema':  db_settings['schema']
+
         }
-        self.connection_string = "{engine}://{user}:{password}@{host}:{port}/{database}?charset={encoding}".format(**db_settings)
+        self.connection_string = "{engine}://{user}:{password}@{host}:{port}/{database}".format(**db_settings)
 
     def get_alchemy_connection(self):
         """
@@ -73,6 +75,7 @@ class Parser(object):
     def run(self):
         (engine, session) = self.get_alchemy_connection()
         self.read_sheet()
+
         # u = self.sheet_data[0].persist(engine)
         user_entries = [x.persist(engine) for x in self.sheet_data]
 
