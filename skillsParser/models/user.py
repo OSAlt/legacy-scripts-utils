@@ -65,7 +65,8 @@ class User(object):
 
     def __create_user(self, engine):
         query = text("""INSERT into skills.users (user_email, creation_date, discord, skills_details, availability, coder, previous_experience) VALUES
-  (:email, :creation_date, :discord, :skills_details, :availability, :coder, :previous_experience ) """ )
+  (:email, :creation_date, :discord, :skills_details, :availability, :coder, :previous_experience ) 
+            ON CONFLICT do NOTHING """ )
 
         engine.execute(query,
                        creation_date=self.date,
@@ -90,7 +91,8 @@ class User(object):
                 continue
 
             query = text("""INSERT into skills.user_programming_languages (user_email, user_language, skillset, description) 
-                        VALUES (:user_email,  :language, :skillset, :description) """)
+                        VALUES (:user_email,  :language, :skillset, :description) 
+                        ON CONFLICT DO NOTHING """)
             engine.execute(query,
                            user_email=user_email,
                            language=lang.strip(),
@@ -100,7 +102,8 @@ class User(object):
 
     def __create_user_categories(self, cursor, user_email, categories):
         for c in categories:
-            query = text("""INSERT into skills.user_categories (user_email, user_category) VALUES (:user_email, :category) """ )
+            query = text("""INSERT into skills.user_categories (user_email, user_category) VALUES (:user_email, :category) 
+                            ON CONFLICT DO NOTHING """ )
             cursor.execute(query, user_email=user_email, category=c.strip())
 
 
