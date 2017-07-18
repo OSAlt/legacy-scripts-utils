@@ -43,10 +43,9 @@ ALTER TABLE user_programming_languages OWNER TO postgres;
 -- Name: users; Type: TABLE; Schema: skills; Owner: postgres
 --
 
-CREATE TABLE users (
+CREATE TABLE user_skills_metadata (
     user_email text NOT NULL,
-    creation_date timestamp with time zone DEFAULT now(),
-    discord text,
+    creation_date TIMESTAMP WITH TIME ZONE DEFAULT now(),
     skills_details text,
     availability text,
     coder boolean DEFAULT false,
@@ -54,7 +53,12 @@ CREATE TABLE users (
 );
 
 
-ALTER TABLE users OWNER TO postgres;
+ALTER TABLE user_skills_metadata OWNER TO postgres;
+
+ALTER TABLE ONLY user_skills_metadata
+    ADD CONSTRAINT user_id_metadata___fk FOREIGN KEY (user_email) REFERENCES
+    global_data.users(user_email) ON UPDATE CASCADE ON DELETE CASCADE;
+
 
 --
 -- Name: user_categories user_categories_pkey; Type: CONSTRAINT; Schema: skills; Owner: postgres
@@ -76,7 +80,7 @@ ALTER TABLE ONLY user_programming_languages
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: skills; Owner: postgres
 --
 
-ALTER TABLE ONLY users
+ALTER TABLE ONLY user_skills_metadata
     ADD CONSTRAINT users_pkey PRIMARY KEY (user_email);
 
 
@@ -85,7 +89,7 @@ ALTER TABLE ONLY users
 --
 
 ALTER TABLE ONLY user_categories
-    ADD CONSTRAINT user_id_categories___fk FOREIGN KEY (user_email) REFERENCES users(user_email) ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT user_id_categories___fk FOREIGN KEY (user_email) REFERENCES global_data.users(user_email) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
@@ -93,7 +97,7 @@ ALTER TABLE ONLY user_categories
 --
 
 ALTER TABLE ONLY user_programming_languages
-    ADD CONSTRAINT user_programming_languages_users_user_id_fk FOREIGN KEY (user_email) REFERENCES users(user_email) ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT user_programming_languages_users_user_id_fk FOREIGN KEY (user_email) REFERENCES global_data.users(user_email) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
