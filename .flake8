@@ -1,0 +1,4 @@
+[flake8]
+ignore = D203,E101,W191,E501,W291
+exclude = dist
+
