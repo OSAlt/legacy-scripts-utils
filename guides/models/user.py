@@ -27,10 +27,6 @@ class User(object):
         return self._email
 
     @property
-    def email(self):
-        return self._email
-
-    @property
     def date(self):
         return self._date
 
@@ -39,7 +35,7 @@ class User(object):
         return self._discord
 
     def __create_user(self, engine):
-        ## Create the baseline user if he doesn't exist.
+        # Create the baseline user if he doesn't exist.
         create_user_query = text("""INSERT into global_data.users (user_email, creation_date, discord) VALUES
   (:email, :creation_date, :discord ) ON CONFLICT do NOTHING """)
         engine.execute(create_user_query,
@@ -72,7 +68,7 @@ class User(object):
                        camera_friendly=self._camera_friendly,
                        transport=self._transport,
                        lodging=self._host)
-        ## This is is far from perfect but it seems to work.
+        # This is is far from perfect but it seems to work.
 
         return self.email
 
