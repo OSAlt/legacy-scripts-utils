@@ -1,3 +1,5 @@
 .idea
 docker_environment
 *.pyc
+guides/responses
+skillsParser/responses

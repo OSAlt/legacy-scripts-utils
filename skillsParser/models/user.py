@@ -64,15 +64,26 @@ class User(object):
 
 
     def __create_user(self, engine):
-        query = text("""INSERT into skills.users (user_email, creation_date, discord, skills_details, availability, coder, previous_experience) VALUES
-  (:email, :creation_date, :discord, :skills_details, :availability, :coder, :previous_experience ) 
-            ON CONFLICT do NOTHING """ )
+        ## Create the baseline user if he doesn't exist.
+        create_user_query = text("""INSERT into global_data.users (user_email, creation_date, discord) VALUES
+  (:email, :creation_date, :discord ) ON CONFLICT do NOTHING """ )
+        engine.execute(create_user_query,
+                       creation_date=self.date,
+                       email=self.email,
+                       discord=unicode(self.discord))
+
+        query = text("""INSERT into skills.user_skills_metadata (user_email, creation_date, skills_details, availability, coder, previous_experience) VALUES
+  (:email, :creation_date, :skills_details, :availability, :coder, :previous_experience ) 
+            ON CONFLICT(user_email) do UPDATE
+            SET skills_details =:skills_details,
+                availability = :availability,
+                coder = :coder,
+                previous_experience = :previous_experience""" )
 
         engine.execute(query,
                        creation_date=self.date,
                        email=self.email,
                        ## This is is far from perfect but it seems to work.
-                       discord=unicode(self.discord),
                        availability=self.availability,
                        coder=self.coder,
                        skills_details=self.skills,
@@ -90,6 +101,10 @@ class User(object):
             if skill is None:
                 continue
 
+            # Delete old data.
+            query = text("""DELETE FROM skills.user_programming_languages where user_email=:user_email""")
+            engine.execute(query, user_email=user_email)
+
             query = text("""INSERT into skills.user_programming_languages (user_email, user_language, skillset, description) 
                         VALUES (:user_email,  :language, :skillset, :description) 
                         ON CONFLICT DO NOTHING """)
@@ -100,11 +115,13 @@ class User(object):
                            description=skill)
 
 
-    def __create_user_categories(self, cursor, user_email, categories):
+    def __create_user_categories(self, engine, user_email, categories):
+        query = text("""DELETE FROM skills.user_categories where user_email=:user_email""")
+        engine.execute(query, user_email=user_email)
         for c in categories:
             query = text("""INSERT into skills.user_categories (user_email, user_category) VALUES (:user_email, :category) 
                             ON CONFLICT DO NOTHING """ )
-            cursor.execute(query, user_email=user_email, category=c.strip())
+            engine.execute(query, user_email=user_email, category=c.strip())
 
 
     def persist(self, engine):
