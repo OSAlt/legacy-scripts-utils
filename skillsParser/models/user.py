@@ -66,7 +66,7 @@ class User(object):
         engine.execute(create_user_query,
                        creation_date=self.date,
                        email=self.email,
-                       discord=unicode(self.discord))
+                       discord=str(self.discord))
 
         query = text("""INSERT into skills.user_skills_metadata (user_email, creation_date, skills_details, availability, coder, previous_experience) VALUES
   (:email, :creation_date, :skills_details, :availability, :coder, :previous_experience ) 
