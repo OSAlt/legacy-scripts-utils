@@ -2,7 +2,7 @@ from copy import copy
 from sqlalchemy import text
 
 
-class User(object):
+class GuideModel(object):
     _data = {}
 
     def __init__(self, raw):
@@ -41,7 +41,7 @@ class User(object):
         engine.execute(create_user_query,
                        creation_date=self.date,
                        email=self.email,
-                       discord=unicode(self.discord))
+                       discord=str(self.discord))
 
         query = text("""INSERT into geeksabroad.user_abroad_metadata (user_email, creation_date,  country, major_city, 
                         geeky_events_nearby, guide, fluent_local_dialect, camera_friendly, provides_transport, 

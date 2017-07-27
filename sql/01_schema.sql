@@ -49,7 +49,11 @@ CREATE TABLE user_skills_metadata (
     skills_details text,
     availability text,
     coder boolean DEFAULT false,
-    previous_experience boolean DEFAULT false
+    previous_experience text,
+    architectual_design text,
+    api_design text,
+    ui_development text,
+    help_with text
 );
 
 

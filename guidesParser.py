@@ -2,16 +2,17 @@ import string
 
 import openpyxl
 
-from script_lib.base_parser import  BaseParser
-from .models.user import User
+from script_lib.base_parser import BaseParser
+from models.guide_model  import GuideModel
 
 
 class Parser(BaseParser):
-    def __init__(self ):
-        BaseParser.__init__(self, '../config/config.yaml')
+    def __init__(self):
+        BaseParser.__init__(self, 'config/config.yaml')
+
 
     def read_sheet(self):
-        wb = openpyxl.load_workbook('responses/responses.xlsx')
+        wb = openpyxl.load_workbook('responses/guideResponses.xlsx')
         sheet = wb.get_sheet_by_name('Form Responses 1')
         data = []
         columns = list(string.ascii_uppercase)[:sheet.max_column]
@@ -24,7 +25,7 @@ class Parser(BaseParser):
             payload = {}
             for y in range(0, len(headers)):
                 payload[headers[y]] = rows[y].value
-            data.append(User(payload))
+            data.append(GuideModel(payload))
 
         self.sheet_data = data
 
