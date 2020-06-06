@@ -1,3 +1,8 @@
+# Deprecated
+
+# This project is no longer maintained.  It had a use case for turning a google sheet form response into a database, but is no longer relevant. Archiving in case there is some use case later down the line.
+
+
 # Running Project
 
 ## Requirements
